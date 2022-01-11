@@ -1,0 +1,28 @@
+<div [formGroup]="formGroupAux">
+  <p-dropdown
+    [options]="data"
+    [formControlName]="formName"
+    optionLabel="name"
+    optionValue="code"
+    [style]="{ width: '100%' }"
+  >
+    <ng-template pTemplate="selected">
+      <div class="country-item" *ngIf="selected">
+        <img
+          [src]="'assets/flags/' + selected.code.toLowerCase() + '.png'"
+          [class]="'flag flag-' + selected.code.toLowerCase()"
+        />
+        <div>{{ selected.name }} lol</div>
+      </div>
+    </ng-template>
+    <ng-template let-country pTemplate="item">
+      <div class="country-item">
+        <img
+          [src]="'assets/flags/' + country.code.toLowerCase() + '.png'"
+          [class]="'flag flag-' + country.code.toLowerCase()"
+        />
+        <div>{{ country.name }}</div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+</div>

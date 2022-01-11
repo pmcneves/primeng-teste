@@ -1,0 +1,137 @@
+<p-table
+  #dt1
+  [columns]="cols"
+  [value]="data"
+  [responsiveLayout]="responsiveLayout"
+  [styleClass]="styleClass"
+  [paginator]="hasPaginator"
+  [rows]="numOfInitialRows"
+  [showCurrentPageReport]="hasPageReport"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [rowsPerPageOptions]="rowsPerPage"
+  [scrollable]="isScrollable"
+  [scrollHeight]="scrollHeight"
+  [dataKey]="dataKey"
+  [(selection)]="rowInfo"
+  sortMode="single"
+  (onRowSelect)="onRowSelect($event.data)"
+  (onRowUnselect)="onRowUnselect($event.data)"
+  editMode="row"
+>
+  <ng-template pTemplate="caption" *ngIf="hasFilter">
+    <div class="flex justify-content-between">
+      <button
+        *ngIf="hasClearTableFilterBtn"
+        pButton
+        label="Clear"
+        class="p-button-outlined"
+        icon="pi pi-filter-slash"
+        (click)="clear(dt1)"
+      ></button>
+      <span class="p-input-icon-left p-ml-auto">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="dt1.filterGlobal(getEventValue($event), 'contains')"
+          placeholder="Search keyword"
+          class="p-inputtext"
+        />
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th style="width: 3rem" *ngIf="hasSelection">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th
+        *ngFor="let col of columns"
+        [pSortableColumn]="col.field"
+        [pSortableColumnDisabled]="!isSortable"
+      >
+        {{ col.header }}
+        <p-sortIcon
+          [field]="col.field"
+          *ngIf="isSortable && hasSortIcon"
+        ></p-sortIcon>
+      </th>
+      <th style="width: 8rem" *ngIf="isEditable"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-rowData
+    let-columns="columns"
+    let-expanded="expanded"
+    let-editing="editing"
+    let-ri="rowIndex"
+  >
+    <tr [pEditableRow]="rowData">
+      <td *ngIf="hasSelection">
+        <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+      </td>
+      <td *ngIf="isExpandable">
+        <button
+          type="button"
+          pButton
+          pRipple
+          [pRowToggler]="rowData"
+          class="p-button-text p-button-rounded p-button-plain"
+          [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+        ></button>
+      </td>
+      <td *ngFor="let col of columns">
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input
+              pInputText
+              class="p-inputtext"
+              type="text"
+              [(ngModel)]="rowData[col.field]"
+            />
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ rowData[col.field] }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td style="text-align: center" *ngIf="isEditable">
+        <button
+          *ngIf="!editing"
+          pButton
+          pRipple
+          type="button"
+          pInitEditableRow
+          icon="pi pi-pencil"
+          (click)="onRowEditInit(rowData)"
+          class="p-button-rounded p-button-text"
+        ></button>
+        <button
+          *ngIf="editing"
+          pButton
+          pRipple
+          type="button"
+          pSaveEditableRow
+          icon="pi pi-check"
+          (click)="onRowEditSave(rowData)"
+          class="p-button-rounded p-button-text p-button-success p-mr-2"
+        ></button>
+        <button
+          *ngIf="editing"
+          pButton
+          pRipple
+          type="button"
+          pCancelEditableRow
+          icon="pi pi-times"
+          (click)="onRowEditCancel(rowData, ri)"
+          class="p-button-rounded p-button-text p-button-danger"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="rowexpansion" let-rowData *ngIf="isExpandable">
+    <p>lol</p>
+  </ng-template>
+  <ng-template pTemplate="paginatorleft"></ng-template>
+</p-table>
